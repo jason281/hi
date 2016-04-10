@@ -1,14 +1,16 @@
 #include <iostream>
-#include<string>
+#include <string>
 #include "HugeInteger.h"
 using namespace std;
 
 
-HugeInteger::HugeInteger (){}
+HugeInteger::HugeInteger (){
+	data=NULL;
+	length=0;
+	sign=false;
+}
 HugeInteger::HugeInteger (int value){
-	
-	int length=1;
-	
+	length=1;
 	int num=value;
 	while(num>=10){
      num=num/10;
@@ -16,11 +18,10 @@ HugeInteger::HugeInteger (int value){
 	}
 	num=value;
 	data=new int [length];
-	for(int i=1;length>=i;i++){
-	  data[length-i]=num%10;
+	for(int i=1;i<=length;i++){
+	  data[length-i-0]=num%10;
 	  num/=10;
 	}
-
 }
 
 HugeInteger::HugeInteger (string value)
