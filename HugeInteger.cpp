@@ -18,8 +18,8 @@ HugeInteger::HugeInteger (int value){
 	}
 	num=value;
 	data=new int [length];
-	for(int i=1;i<=length;i++){
-	  data[length-i-0]=num%10;
+	for(int i=0;i<length;i++){
+	  data[i]=num%10;
 	  num/=10;
 	}
 }
@@ -30,7 +30,7 @@ HugeInteger::HugeInteger (string value)
 		   
 	data=new int [length];
 	for(int i=1;length>=i;i++){
-	  data[length-i]=value[length-i]-48;
+	  data[length-i]=value[i-1]-48;
 	  
     }
 }
@@ -47,6 +47,15 @@ HugeInteger:: ~HugeInteger(){
   delete [] data;
   data=NULL;
 }
+HugeInteger& HugeInteger::operator=(const HugeInteger& pt){
+	delete [] data;
+	length=pt.length;
+	sign=pt.sign;
+	data= new int[length];
+	for(int i=0;i<length;i++)
+       data[i]=pt.data[i];
+   return *this;
+}
 HugeInteger HugeInteger:: add( HugeInteger &pt){
 	
 	  HugeInteger c;
@@ -60,42 +69,42 @@ HugeInteger HugeInteger:: add( HugeInteger &pt){
 	c.length=length;
 	smalllength=pt.length;
 	}
-	
-	  for(int i=1;i<=c.length;i++){
-
-		 if((smalllength-i)>=0) {
-
- 	      if( (data[length-i]+pt.data[pt.length-i])<10){
-	        c.data[c.length-i]=data[length-i]+pt.data[pt.length-i];
-	      }
-	      else{
-	      c.data[c.length-i]=data[length-i]+pt.data[pt.length-i]-10;
-	      c.data[c.length-i-1]+=1;
+	c.data=new int [c.length];
+	for(int i=0;i<c.length;i++)
+		c.data[i]=0;
+	for(int i=0;i<c.length;i++){
+		if((smalllength-i)>0) {
+		    if( (data[i]+pt.data[i])<10){
+	        	c.data[i]+=data[i]+pt.data[i];
+	      	}
+	      	else{
+	      		c.data[i]+=data[i]+pt.data[i]-10;
+	      		c.data[i+1]+=1;
 	       }
-	     }
-		 else{
-		   if(pt.length>length){
- 	         if( (c.data[c.length-i]+pt.data[pt.length-i])<10){
-	           c.data[c.length-i]=c.data[c.length-i]+pt.data[pt.length-i];
-	         }
-	         else{
-	           c.data[c.length-i]=c.data[c.length-i]+pt.data[pt.length-i]-10;
-	           c.data[c.length-i-1]+=1;
-	         }
-		   }
-		   else{		   
- 	         if( (c.data[c.length-i]+data[length-i])<10){
-	           c.data[c.length-i]=c.data[c.length-i]+data[length-i];
-	         }
-	         else{
-	           c.data[c.length-i]=c.data[c.length-i]+data[length-i]-10;
-	           c.data[c.length-i-1]+=1;
-             }
-  		   }
-		 }	 
-	  }
-		  return c;
+	    }
+		else{
+		   	if(pt.length>length){
+		        if( (c.data[i]+pt.data[i])<10){
+	           		c.data[i]=c.data[i]+pt.data[i];
+	         	}
+	        	else{
+	           		c.data[i]=c.data[i]+pt.data[i]-10;
+	           		c.data[i+1]+=1;
+	         	}
+		   	}
+		   	else{		   
+		        if( (c.data[i]+data[i])<10){
+	           		c.data[i]=c.data[i]+data[i];
+	         	}
+	         	else{
+	           		c.data[i]=c.data[i]+data[i]-10;
+	           		c.data[i+1]+=1;
+	         	}
+			}
+		}	 
 	}
+	return c;
+}
 
 HugeInteger HugeInteger:: subtract( HugeInteger &pt){
 
@@ -110,24 +119,41 @@ HugeInteger HugeInteger:: subtract( HugeInteger &pt){
 	c.length=length;
 	smalllength=pt.length;
 	}
-	
-	  for(int i=1;i<=c.length;i++){
-
-		 if((smalllength-i)>=0) {
-
- 	      if( (data[length-i]-pt.data[pt.length-i])>=0){
-	        c.data[c.length-i]=data[length-i]-pt.data[pt.length-i];
-	      }
-	      else{
-	      c.data[c.length-i]=data[length-i]-pt.data[pt.length-i]+10;
-	      c.data[c.length-i-1]-=1;
-	       }
-	     }
-		 else{
-	           c.data[c.length-i]=c.data[c.length-i]+pt.data[pt.length-i];
-		 }
-	  }
-		  return c;
+	c.data=new int[c.length];
+	for(int i=0;i<c.length;i++)
+		c.data[i]=0;
+	for(int i=0;i<c.length;i++){
+		if((smalllength-i)>0) {
+	 	    if( (data[i]-pt.data[i])>=0){
+		    	c.data[i]+=data[length-i]-pt.data[i];
+		    }
+		    else{
+		    	c.data[i]=data[i]-pt.data[i]+10;
+		    	c.data[i+1]-=1;
+		    }
+	    }
+		else{
+		   	if(pt.length>length){
+		        if( (c.data[i]+pt.data[i])>=0){
+	           		c.data[i]=c.data[i]+pt.data[i];
+	         	}
+	        	else{
+	           		c.data[i]=c.data[i]+pt.data[i]+10;
+	           		c.data[i+1]-=1;
+	         	}
+		   	}
+		   	else{		   
+		        if( (c.data[i]+data[i])>=0){
+	           		c.data[i]=c.data[i]+data[i];
+	         	}
+	         	else{
+	           		c.data[i]=c.data[i]+data[i]+10;
+	           		c.data[i+1]-=1;
+	         	}
+			}
+		}
+	}
+	return c;
 }
 void HugeInteger:: output(){
 
